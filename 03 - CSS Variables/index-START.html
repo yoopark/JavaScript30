@@ -42,10 +42,44 @@
     input {
       width: 100px;
     }
+
+    .hl {
+      color: #ffc600;
+    }
+
+    img {
+      padding: 10px;
+      filter: blur(10px);
+      background: #ffc600;
+    }
   </style>
 
-  <script>
-  </script>
+<script>
+'use strict';
+
+const spacingElement = document.querySelector('input#spacing');
+const blurElement = document.querySelector('input#blur');
+const baseElement = document.querySelector('input#base');
+const imgElement = document.querySelector('img');
+const hlElement = document.querySelector('.hl');
+
+spacingElement.addEventListener('input', (e) => {
+  const spacing = e.target.value;
+  imgElement.style.padding = `${spacing}px`;
+});
+
+blurElement.addEventListener('input', (e) => {
+  const blur = e.target.value;
+  imgElement.style.filter = `blur(${blur}px)`;
+});
+
+baseElement.addEventListener('input', (e) => {
+  const base = e.target.value;
+  imgElement.style.background = `${base}`;
+  hlElement.style.color = `${base}`;
+});
+
+</script>
 
 </body>
 </html>
