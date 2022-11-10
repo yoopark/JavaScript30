@@ -37,28 +37,67 @@
     
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
+    console.log(inventors.filter(({year}) => 1500 <= year && year < 1600))
 
     // Array.prototype.map()
     // 2. Give us an array of the inventors first and last names
+    console.log(inventors.map(({first, last}) => [first, last]))
 
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+    console.log(inventors.sort((a, b) => {
+      if (a.year < b.year) return -1;
+      if (a.year > b.year) return 1;
+      return 0;
+    }))
 
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live all together?
+    // 부연 설명 : inventors가 각각 산 햇수를 모두 더하면?
+    const totalYears = inventors.reduce((acc, cur) => {
+      const currentYears = cur.passed - cur.year;
+      return acc + currentYears;
+    }, 0);
+    console.log(totalYears);
 
     // 5. Sort the inventors by years lived
+    console.log(inventors.sort((a, b) => {
+      const aYears = a.passed - a.year;
+      const bYears = b.passed - b.year;
+      if (aYears < bYears) return 1;
+      if (aYears > bYears) return -1;
+      return 0;
+    }))
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
 
+    /* 
+    ** fetch('https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris') 
+    ** CORS 문제로 불가능
+    ** 위 사이트에 직접 들어가서 아래 JS 코드를 입력하는 방법으로 테스트가 가능합니다. 
+    */
+    // const elems = document.querySelector('.mw-category').querySelectorAll('a');
+    // const names = Array.from(elems).map(({innerHTML}) => innerHTML)
+    // console.log(names.filter(name => name.search('de') != -1))
+
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+    console.log(people.sort())
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
+    // 부연 설명 : Counter in python처럼 name을 key로 갖고 count를 value로 갖는 Object 만들기
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+    const counter = data.reduce((obj, vehicle) => {
+      if (!(vehicle in obj))
+        obj[vehicle] = 1;
+      else
+        obj[vehicle]++;
+      return obj;
+    }, {})
+    console.log(counter);
 
   </script>
 </body>
