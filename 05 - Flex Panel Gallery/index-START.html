@@ -24,11 +24,15 @@
     }
 
     .panels {
+      display: flex;
       min-height: 100vh;
       overflow: hidden;
     }
 
     .panel {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
       background: #6B0F9C;
       box-shadow: inset 0 0 0 5px rgba(255,255,255,0.1);
       color: white;
@@ -53,6 +57,12 @@
 
     /* Flex Children */
     .panel > * {
+      flex: 1;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
@@ -69,8 +79,27 @@
       font-size: 4em;
     }
 
+    .panel p:first-child {
+      position: relative;
+      top: -200px;
+    }
+
+    .panel p:last-child {
+      position: relative;
+      bottom: -200px;
+    }
+
+    .panel.open-end p:first-child {
+      transform: translateY(200px);
+    }
+
+    .panel.open-end p:last-child {
+      transform: translateY(-200px);
+    }
+
     .panel.open {
       font-size: 40px;
+      flex: 5;
     }
 
   </style>
@@ -104,11 +133,34 @@
     </div>
   </div>
 
-  <script>
+<script>
+'use strict';
 
-  </script>
+const OPEN_CLASSNAME = 'open';
+const OPEN_END_CLASSNAME = 'open-end';
 
+const handleClick = (event) => {
+  if (event.currentTarget.classList.contains(OPEN_CLASSNAME)) {
+    event.currentTarget.classList.remove(OPEN_CLASSNAME);
+  } else {
+    event.currentTarget.classList.add(OPEN_CLASSNAME);
+  }
+}
 
+const handleTransitionEnd = (event) => {
+  if (event.propertyName !== 'flex-grow') return;
+  if (event.currentTarget.classList.contains(OPEN_CLASSNAME)) {
+    event.currentTarget.classList.add(OPEN_END_CLASSNAME);
+  } else {
+    event.currentTarget.classList.remove(OPEN_END_CLASSNAME);
+  }
+}
+
+const panels = document.querySelectorAll('.panel');
+panels.forEach((panel) => panel.addEventListener('click', handleClick));
+panels.forEach((panel) => panel.addEventListener('transitionend', handleTransitionEnd));
+
+</script>
 
 </body>
 </html>
