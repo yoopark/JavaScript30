@@ -7,6 +7,55 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+'use strict';
+
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+
+// 800x800에서 현재 윈도우 창 크기로 Resize
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+ctx.likeJoin = 'round';
+ctx.lineCap = 'round';
+
+let isDrawing = false; // 클릭/드래그 중
+let [lastX, lastY] = [0, 0];
+
+let hue = 0; // [0, 360)
+let direction = true; // true면 굵기 커지는 단계, false면 작아짐
+
+function draw(e) {
+  if (!isDrawing) return;
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY); // 0,0에서
+  ctx.lineTo(e.offsetX, e.offsetY); // offsetX,offsetY 로 이어지는 선분이 그려짐
+  ctx.stroke();
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+  hue++;
+  if (hue >= 360) {
+    hue = 0;
+  }
+  if (ctx.lineWidth >= 50 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+  if (direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+}
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  // lastX, lastY를 예전 lastX, lastY에서 새 자리로 옮겨주기
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false); // 창 밖으로 나가면
+
 </script>
 
 <style>
