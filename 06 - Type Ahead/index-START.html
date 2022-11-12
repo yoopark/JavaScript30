@@ -10,12 +10,56 @@
   <form class="search-form">
     <input type="text" class="search" placeholder="City or State">
     <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
     </ul>
   </form>
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities = []
+const ulElem = document.querySelector('ul.suggestions');
+
+String.prototype.indexListOf = function indexListOf(searchString) {
+  let ret = [];
+
+  let idx = 0;
+  while ((idx = this.indexOf(searchString, idx)) !== -1) {
+    ret.push(idx);
+    idx += searchString.length;
+  }
+  if (ret.length !== 0) {
+    console.log(this, searchString, ret);
+  }
+  return ret;  
+}
+
+fetch(endpoint)
+  .then(res => res.json())
+  .then((json) => 
+    json.map(({city, state, population}) => cities.push({ name: city, state, population: Number(population) }))
+  )
+
+document.querySelector('input.search').addEventListener('input', function() {
+  ulElem.textContent = "";
+  const s = this.value.toLowerCase();
+  if (s === "") return;
+
+  cities.map(({name, state, population}) => {
+    const fullName = `${name}, ${state}`;
+    const indexList = fullName.toLowerCase().indexListOf(s);
+    if (indexList.length === 0) return;
+
+    const liElem = document.createElement('li');
+    const nameElem = document.createElement('span');
+    nameElem.setAttribute('class', 'name');
+    nameElem.appendChild(document.createTextNode(fullName));
+    const populationElem = document.createElement('span');
+    populationElem.setAttribute('class', 'population');
+    populationElem.appendChild(document.createTextNode(population));
+    liElem.appendChild(nameElem);
+    liElem.appendChild(populationElem);
+    ulElem.appendChild(liElem);
+  });
+});
 
 </script>
 </body>
