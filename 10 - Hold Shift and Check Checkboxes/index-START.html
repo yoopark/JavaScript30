@@ -96,6 +96,42 @@
   </div>
 
 <script>
+'use strict';
+
+let isShiftKeyPressed = false;
+const checkboxes = document.querySelectorAll('input[type=checkbox]');
+
+window.addEventListener('keydown', (e) => {
+  if (e.key !== 'Shift') return;
+  isShiftKeyPressed = true;
+})
+window.addEventListener('keyup', (e) => {
+  if (e.key !== 'Shift') return;
+  isShiftKeyPressed = false;
+})
+
+let lastCheckedIdx = -1;
+function handleChange(e, idx) {
+  if (!e.currentTarget.checked) {
+    lastCheckedIdx = -1;
+    return;
+  }
+  if (!isShiftKeyPressed || lastCheckedIdx === -1) {
+    lastCheckedIdx = idx;
+    return;
+  }
+  console.log(lastCheckedIdx, idx);
+
+  let [start, end] = [lastCheckedIdx, idx];
+  if (start > end) {
+    [start, end] = [end, start];
+  }
+  Array.from(checkboxes).slice(start, end + 1).map((checkbox) => checkbox.checked = true);
+  lastCheckedIdx = idx;
+}
+
+Array.from(checkboxes).map((checkbox, idx) => checkbox.addEventListener('change', (e) => handleChange(e, idx)));
+
 </script>
 </body>
 </html>
